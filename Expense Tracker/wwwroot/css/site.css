@@ -382,3 +382,9 @@ nav.open ~ .overlay {
 .btn_delete:active .icon svg, .btn_edit:active .icon svg {
     transform: scale(0.8);
 }
+
+
+/*Remove default list styling in error messages*/
+.validation-summary-errors li {
+    list-style: none;
+}
