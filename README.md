@@ -4,7 +4,8 @@
 
 
 # Dashboard :
-![image](https://github.com/EnniouarMohammed/Expense-Tracker/assets/88623067/667ef64a-fe5c-4e3d-8e39-c47439e0c1bc)
+![image](https://github.com/EnniouarMohammed/Expense-Tracker/assets/88623067/9f85517c-7192-4887-9919-760e594dcd58)
+
 
 
 # Transactions :
