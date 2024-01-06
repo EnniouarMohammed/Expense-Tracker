@@ -5,9 +5,39 @@
     ViewData["isDashboard"] = true;
 }
 
+@*Filter Dates*@
+<div class="row widget mb-4">
+    <div class="d-flex justify-content-center">
+        <h5 class="fw-bold">Date Range Filter for Transactions</h5>
+    </div>
+    <form asp-action="FilterDates" method="post" class="d-flex justify-content-center flex-column">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="px-5 pb-5">
+                    <ejs-datepicker id="date_start" name="date_start" placeholder="Start Date" floatLabelType="Always" format="MMM-dd-yy" value="@ViewBag.StartDate"></ejs-datepicker>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="px-5 pb-5">
+                    <ejs-datepicker id="date_end" name="date_end" placeholder="End Date" floatLabelType="Always" format="MMM-dd-yy" value="@ViewBag.EndDate"></ejs-datepicker>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 offset-md-3 mb-3">                
+                <div class="d-flex justify-content-center">
+                    <ejs-button id="submit" type="submit" content="Search" cssClass="e-success"></ejs-button>
+                </div>
+            </div>
+        </div>
+    </form>
+    <div class="d-flex justify-content-center">
+        <div asp-validation-summary="All" class="justify-content-center text-danger"></div>
+    </div>
+</div>
+@* /***************************************************************************************/ *@
 @*Summary Widgets*@
 <div class="row mb-4">
-
     <div class="col-md-4">
         <div class="d-flex flex-row widget summary income">
             <div class="d-flex flex-column justify-content-center p-5">

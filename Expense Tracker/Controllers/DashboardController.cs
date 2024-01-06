@@ -8,16 +8,64 @@ namespace Expense_Tracker.Controllers
     public class DashboardController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private DateTime _startDate;
+        private DateTime _endDate;
+
         public DashboardController(ApplicationDbContext context)
         {
             _context = context;
+            _startDate = DateTime.Today.AddDays(-6);
+            _endDate = DateTime.Today;
+        }
+
+        public async Task<ActionResult> FilterDates(DateTime? date_start, DateTime? date_end)
+        {
+            if (date_start.HasValue && date_end.HasValue)
+            {
+                if (date_start.Value > date_end.Value)
+                {                    
+                    ModelState.AddModelError("", "Start date cannot be greater than end date.");
+                    return View("Index");
+                }
+                else if (!date_start.HasValue || !date_end.HasValue)
+                {
+                    ModelState.AddModelError("", "Both start date and end date are required.");
+                    return View("Index");
+                }
+
+                else if (date_start.Value > DateTime.Now || date_end.Value > DateTime.Now)
+                {
+                    ModelState.AddModelError("", "Dates cannot be in the future.");
+                    return View("Index");
+                }
+                else {
+                    _startDate = date_start.Value;
+                    _endDate = date_end.Value;
+
+                    ViewBag.StartDate = _startDate;
+                    ViewBag.EndDate = _endDate;
+
+                    TempData["StartDate"] = _startDate;
+                    TempData["EndDate"] = _endDate;
+                }                
+            }
+            else
+            {
+                ViewBag.StartDate = _startDate;
+                ViewBag.EndDate = _endDate;
+            }
+
+            return RedirectToAction("Index");
         }
 
         public async Task<ActionResult> Index()
         {
+            ViewBag.StartDate = TempData["StartDate"] != null ? (DateTime)TempData["StartDate"] : _startDate;
+            ViewBag.EndDate = TempData["EndDate"] != null ? (DateTime)TempData["EndDate"] : _endDate;
+
             //Last 7 Days
-            DateTime StartDate = DateTime.Today.AddDays(-6);
-            DateTime EndDate = DateTime.Today;
+            DateTime StartDate = ViewBag.StartDate;
+            DateTime EndDate = ViewBag.EndDate;
 
             List<Transaction> SelectedTransactions = await _context.Transactions
                 .Include(x => x.Category)
@@ -80,11 +128,20 @@ namespace Expense_Tracker.Controllers
                 .ToList();
 
             //Combine Income & Expense
-            string[] Last7Days = Enumerable.Range(0, 7)
-                .Select(i => StartDate.AddDays(i).ToString("dd-MMM"))
-                .ToArray();
+            int numberOfDays = (EndDate - StartDate).Days + 1;
 
-            ViewBag.SplineChartData = from day in Last7Days
+            List<string> dateList = new List<string>();
+            DateTime currentDate = StartDate; // Assuming StartDate is defined somewhere
+
+            for (int i = 0; i < numberOfDays; i++)
+            {
+                dateList.Add(currentDate.ToString("dd-MMM"));
+                currentDate = currentDate.AddDays(1);
+            }
+
+            string[] dateArray = dateList.ToArray();
+
+            ViewBag.SplineChartData = from day in dateArray
                                       join income in IncomeSummary on day equals income.day into dayIncomeJoined
                                       from income in dayIncomeJoined.DefaultIfEmpty()
                                       join expense in ExpenseSummary on day equals expense.day into expenseJoined
@@ -95,6 +152,7 @@ namespace Expense_Tracker.Controllers
                                           income = income == null ? 0 : income.income,
                                           expense = expense == null ? 0 : expense.expense,
                                       };
+
             //Recent Transactions
             ViewBag.RecentTransactions = await _context.Transactions
                 .Include(i => i.Category)
