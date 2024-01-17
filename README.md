@@ -23,6 +23,12 @@
 # Create a New Category :
 ![image](https://github.com/EnniouarMohammed/Expense-Tracker/assets/88623067/547cf414-753d-4239-8a70-2a52269cff4c)
 
+# Application Execution Explanation
+## Video Tutorial
+
+[![Application Execution](https://img.youtube.com/vi/VNu1Wbi7FjE/0.jpg)](https://youtu.be/VNu1Wbi7FjE)
+
+Click the image above to watch a video tutorial explaining the execution of the application.
 
 
 # Installation :
